@@ -114,3 +114,63 @@ def DH(self, theta, d, a, alpha):
 ```
 
 This matrix represents the complete transformation from one joint to the next, incorporating both rotation and translation.
+
+
+
+In `NIKO_armLR_visualizer.py`, the revolute joints are represented through the DH parameters and joint angles. Let me explain how:
+
+1. The joint angles (revolute joints) are primarily represented in:
+
+````python:NIKO_armLR_visualizer.py
+# Initial joint angles (home position)
+if side == 'left':
+    self.theta = np.array([-90, 90, 0, 0, 0, -90])  # 6 revolute joints
+    self.origin = np.array([0, -77.5, 0])
+else:  # right arm
+    self.theta = np.array([90, -90, 0, 0, 0, 90])   # 6 revolute joints
+    self.origin = np.array([0, 77.5, 0])
+````
+
+2. The movement of these revolute joints is handled in:
+
+````python:NIKO_armLR_visualizer.py
+def get_joint_positions(self, theta_input):
+    # ... existing code ...
+    
+    # This line updates the current joint angles by adding input angles
+    self.theta_c = self.theta + theta_input
+    
+    # Calculate each joint's transformation
+    for i in range(1, self.joint_num):
+        T[i] = np.dot(T[i-1], self.DH(self.theta_c[i-1], self.d[i-1], self.a[i-1], self.alpha[i-1]))
+        P[i] = T[i][:3, 3]  # Joint position
+        R_matrices[i] = T[i][:3, :3]  # Joint orientation
+````
+
+3. The actual joint movement simulation/reading happens in:
+
+````python:NIKO_armLR_visualizer.py
+def update(self, frame):
+    if self.use_arduino:
+        angle = self.read_encoder_data()
+        if angle is not None:
+            self.current_angles_left[0] = angle  # Update first joint
+            self.current_angles_right[0] = -angle  # Mirror for right arm
+    else:
+        # Simulate movement
+        angle = self.simulate_movement()
+        self.current_angles_left[0] = angle
+        self.current_angles_right[0] = -angle
+````
+
+For comparison with the URDF file, these joints correspond to:
+```xml:humanoid.urdf
+<joint name="1" type="revolute">  <!-- Base joint -->
+<joint name="2" type="revolute">  <!-- Shoulder joint -->
+<joint name="3" type="revolute">  <!-- Upper arm joint -->
+<joint name="4" type="revolute">  <!-- Elbow joint -->
+<joint name="5" type="revolute">  <!-- Forearm joint -->
+<joint name="6" type="revolute">  <!-- Wrist joint -->
+```
+
+Would you like me to add explicit joint limit parameters or additional joint properties to the visualization code to match the URDF specifications?

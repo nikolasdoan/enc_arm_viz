@@ -11,31 +11,19 @@ class ArmLR:
         self.side = side
         self.L1 = 4.4 
         self.L2 = 28.05
-        self.L3 = 30.4
-        
-        """ This array defines the initial/home position angles (in degrees) for each joint 
-        self.theta = np.array([-90, 90, 0, 0, 0, -90])
-                                │   │  │  │  │   │
-                                │   │  │  │  │   └─ Joint 6 (end-effector): -90° rotation
-                                │   │  │  │  └─────  Joint 5: 0° rotation
-                                │   │  │  └────────  Joint 4: 0° rotation
-                                │   │  └───────────  Joint 3: 0° rotation
-                                │   └──────────────  Joint 2: 90° rotation
-                                └─────────────────── Joint 1 (base): -90° rotation
-        """
-
-
+        self.L3 = 30.4        
         # Base theta values differ for left and right arms
         if side == 'left':
             self.theta = np.array([180, 90, 0, 0, 0, -90])
-            self.origin = np.array([-20, 0, 0])  # -77.5 mm in Y direction
+            self.origin = np.array([-20, 0, 0])  # -20 mm in Y direction
         else:  # right arm
             self.theta = np.array([180, -90, 0, 0, 0, -90])  # Mirrored angles
-            self.origin = np.array([20, 0, 0])   # +77.5 mm in Y direction
+            self.origin = np.array([20, 0, 0])   # +20 mm in Y direction
             
         self.d = np.array([0, 0, -self.L1, 0, -self.L2, 0])
         self.a = np.array([0, 0, 0, 0, 0, self.L3])
         self.alpha = np.array([-90, -90, 90, -90, 90, 0])
+
         self.joint_num = len(self.theta) + 1
         self.theta_c = []
 
