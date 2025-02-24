@@ -59,7 +59,7 @@ When the arm moves, these base angles are added to the input angles (`theta_inpu
 
 The DH (Denavit-Hartenberg) parameters are a systematic method to describe the kinematics of a robot arm. Let me break down each parameter array:
 
-```python:NIKO_armLR_visualizer.py
+```python:dualarm_visualizer.py
 # d: Joint offset (distance along previous z to common normal)
 self.d = np.array([0, 0, -self.L1, 0, -self.L2, 0])
 #                  │  │    │      │    │      │
@@ -117,11 +117,11 @@ This matrix represents the complete transformation from one joint to the next, i
 
 
 
-In `NIKO_armLR_visualizer.py`, the revolute joints are represented through the DH parameters and joint angles. Let me explain how:
+In `dualarm_visualizer.py`, the revolute joints are represented through the DH parameters and joint angles. Let me explain how:
 
 1. The joint angles (revolute joints) are primarily represented in:
 
-````python:NIKO_armLR_visualizer.py
+````python:dualarm_visualizer.py
 # Initial joint angles (home position)
 if side == 'left':
     self.theta = np.array([-90, 90, 0, 0, 0, -90])  # 6 revolute joints
@@ -133,7 +133,7 @@ else:  # right arm
 
 2. The movement of these revolute joints is handled in:
 
-````python:NIKO_armLR_visualizer.py
+````python:dualarm_visualizer.py
 def get_joint_positions(self, theta_input):
     # ... existing code ...
     
@@ -149,7 +149,7 @@ def get_joint_positions(self, theta_input):
 
 3. The actual joint movement simulation/reading happens in:
 
-````python:NIKO_armLR_visualizer.py
+````python:dualarm_visualizer.py
 def update(self, frame):
     if self.use_arduino:
         angle = self.read_encoder_data()
@@ -172,5 +172,3 @@ For comparison with the URDF file, these joints correspond to:
 <joint name="5" type="revolute">  <!-- Forearm joint -->
 <joint name="6" type="revolute">  <!-- Wrist joint -->
 ```
-
-Would you like me to add explicit joint limit parameters or additional joint properties to the visualization code to match the URDF specifications?
